@@ -11,3 +11,5 @@ Build is very fast and doesn't require anything apart from running termina vm (t
 That's it
 ## Run
 To run simply execute `# run.sh`
+
+To ssh into vm run `ssh chronos@192.168.10.2`
