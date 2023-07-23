@@ -40,10 +40,10 @@ if ! ip addr show devtap &> /dev/null; then
     sysctl net.ipv4.ip_forward=1
 fi
 
-crosvm run \
+exec crosvm run \
     --disable-sandbox \
-    --cpus 4 \
-    --mem 1024 \
+    --cpus 8 \
+    --mem 3072 \
     --net tap-name=devtap \
     --block "vm_state,o_direct=true,sparse=false" \
     --block "vm_root,ro,o_direct=true,root,sparse=false" \

@@ -95,6 +95,8 @@ readonly CNAME="${INSTANCE_PREFIX}-$(uuidgen)"
     mount "${STATE_FILE}" "${mnt}"
 
     mkdir -p "${mnt}/home/.ssh"
+   	chown -R 1000:1000 "${mnt}/home"
+   	chmod -R 700 "${mnt}/home" 
 
     umount "${mnt}" && rmdir "${mnt}"
 

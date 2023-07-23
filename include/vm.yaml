@@ -105,6 +105,9 @@ packages:
     - openssh
     - docker
     - docker-compose
+    - git
+    - htop
+    - micro
     action: install
 
 actions:
