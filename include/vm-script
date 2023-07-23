@@ -1,0 +1,25 @@
+#!/bin/bash
+
+set -eu
+
+while ! ping -W1 -c1 linuxcontainers.org >/dev/null 2>&1; do sleep 1; done
+
+export PATH="/snap/bin:${PATH}"
+rm -f /run/dbus/system_bus_socket
+
+snap refresh distrobuilder || {
+	sleep 15
+	snap refresh distrobuilder
+}
+
+mkdir -p /root/build/cache
+cd /root/build/
+mv /root/distrobuilder.yaml image.yaml
+
+readonly SERIAL=$(date -u +%Y%m%d_%H:%M)
+distrobuilder --cache-dir /root/build/cache/ \
+	build-dir image.yaml rootfs -o image.serial="${SERIAL}"
+
+btrfs subvolume delete rootfs/var/lib/machines >/dev/null 2>&1 || true
+
+echo "$SERIAL" > rootfs/etc/issue

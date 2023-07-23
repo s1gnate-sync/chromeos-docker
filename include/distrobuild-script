@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+
+set -eu
+
+readonly MIRROR="http://us.ports.ubuntu.com/ubuntu-ports"
+
+while ! ping -W1 -c1 linuxcontainers.org >/dev/null 2>&1; do sleep 1; done
+
+umount -l /sys/devices/system/cpu || true
+
+echo force-unsafe-io >> /etc/dpkg/dpkg.cfg
+
+cat > /etc/apt/apt.conf.d/60lxc-ci <<- EOL
+	APT::Get::Show-Versions "true";
+	Acquire::Languages "none";
+EOL
+
+cat > /etc/apt/sources.list <<- EOL
+	deb ${MIRROR} jammy main universe
+	deb ${MIRROR} jammy-updates main universe
+	deb ${MIRROR} jammy-security main universe
+EOL
+
+apt-get update --yes
+
+apt-get install --yes --no-install-recommends \
+	btrfs-progs \
+	build-essential \
+	ca-certificates \
+	debootstrap \
+	dirmngr \
+	dosfstools \
+	gcc \
+	gdisk \
+	git \
+	gpg \
+	gpg-agent \
+	kpartx \
+	libc6-dev \
+	libncurses-dev \
+	mawk \
+	patch \
+	python3 \
+	qemu-utils \
+	rsync \
+	snapd \
+	squashfs-tools \
+	unzip \
+	xz-utils \
+	zstd
+
+apt-get clean
+
+export PATH="/snap/bin:${PATH}"
+
+snap install snapd || true
+snap install snapd || true
+
+snap install distrobuilder --classic --edge
+
+snap refresh
