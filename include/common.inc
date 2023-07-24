@@ -76,20 +76,12 @@ lxc() {
 }
 
 vsh() {
-	[ -z "${CID:-}" ] && declare -g CID="$(parse_cid)"
-
 	local cmd="${1:-sh}"
 	command vsh --cid="${CID}" -- \
 		PATH=/opt/google/lxd-next/bin:/opt/google/lxd-next/usr/bin:/usr/local/bin:/usr/bin:/bin:/opt/bin \
 		LXD_CONF=/mnt/stateful/lxd_conf \
 		LXD_DIR=/mnt/stateful/lxd \
 		sh -c "${cmd}"
-}
-
-parse_cid() {
-	local cryptohome_id="$(ls /home/user -1 | head -zn1)"
-	concierge_client --list_vms --cryptohome_id=${cryptohome_id} 2>/dev/null \
-		| grep cid | sed -E 's/[^0-9]+//g'
 }
 
 assert_root

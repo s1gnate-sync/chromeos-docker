@@ -103,6 +103,8 @@ packages:
     - shadow
     - bash
     - openssh
+    - openssl
+    - curl
     - docker
     - docker-compose
     - git
